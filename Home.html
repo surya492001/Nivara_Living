@@ -11,7 +11,7 @@
     /* HEADER / HERO */
     .hero {
       background: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
-      url('https://images.unsplash.com/photo-1615874959474-d609969a20ed?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+      url('https:/Images.unsplash.com/photo-1615874959474-d609969a20ed?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
       height: 65vh;
       display: flex;
       align-items: center;
@@ -177,10 +177,10 @@
   <!-- HERO -->
   <div class="hero">
     <div class="logo-container">
-  <img src="/Images/surya-living-logo.png" alt="Surya Living Logo" class="logo">
+  <img src="./Images/surya-living-logo.png" alt="Surya Living Logo" class="logo">
 </div>
 
-    <h1><span style="font-size:22px;font-weight:400;">Premium Accessories for Hotels & Homestays</span></h1>
+    <h1><span style="font-size:22px;font-weight:400;">Premium Accessories for Modern Living/span></h1>
   </div>
 
 
@@ -215,7 +215,7 @@
   <!-- BED SHEETS -->
 
 <div class="card"data-category="bedsheet">
-  <img id="bedsheet-img" src="/Images/bed_sheet_grey.jpeg" />
+  <img id="bedsheet-img" src="./Images/bed_sheet_grey.jpeg" />
 
     <div class="card-content">
 
@@ -246,7 +246,7 @@
 
   <!-- PILLOW COVERS -->
 <div class="card"data-category="pillow">
-  <img id="pillow-img" src="/Images/greypillow.jpeg" />
+  <img id="pillow-img" src="./Images/greypillow.jpeg" />
     <div class="card-content">
 
   <h4 id="pillow-name">Pillow Cover – 300 TC</h4>
@@ -276,7 +276,7 @@
 
   <!-- TOWELS -->
 <div class="card"data-category="towel">
-  <img id="towel-img" src="/Images/towel_white.jpeg" />
+  <img id="towel-img" src="./Images/towel_white.jpeg" />
     <div class="card-content">
 
   <h4 id="towel-name">Hotel Towel – 500 GSM</h4>
@@ -307,7 +307,7 @@
 
   <!-- BLANKET -->
 <div class="card"data-category="duvet">
-  <img src="/Images/blanket_camel.jpeg" />
+  <img src="./Images/blanket_camel.jpeg" />
     <div class="card-content">
 
   <h4>Fleece Blanket – Camel | Quality - Double</h4>
@@ -338,9 +338,9 @@ function updateBedSheet(select) {
   const offerPrice = Math.round(mrp * (100 - discountPercent) / 100);
 
   const imgMap = {
-    grey: "/Images/bed_sheet_grey.jpeg",
-    taupe: "/Images/bed_sheet_taupe.jpeg",
-    white: "/Images/bed_sheet_white.jpeg"
+    grey: "./Images/bed_sheet_grey.jpeg",
+    taupe: "./Images/bed_sheet_taupe.jpeg",
+    white: "./Images/bed_sheet_white.jpeg"
   };
 
   document.getElementById("bedsheet-img").src = imgMap[color];
@@ -368,9 +368,9 @@ function updateTowel(selt) {
 
 
   const imgMap = {
-    taupe: "/Images/towel_taupe.jpeg",
-    brown: "/Images/towel_brown.jpeg",
-    white: "/Images/towel_white.jpeg"
+    taupe: "./Images/towel_taupe.jpeg",
+    brown: "./Images/towel_brown.jpeg",
+    white: "./Images/towel_white.jpeg"
 
   };
 
@@ -399,9 +399,9 @@ function updatePillow(selval) {
 
 
   const imgMap = {
-    grey: "/Images/greypillow.jpeg",
-    brown: "/Images/brownpillow.jpeg",
-    white: "/Images/White_pillow.jpeg"
+    grey: "./Images/greypillow.jpeg",
+    brown: "./Images/brownpillow.jpeg",
+    white: "./Images/White_pillow.jpeg"
   };
 
   document.getElementById("pillow-img").src = imgMap[color2];
@@ -456,7 +456,7 @@ updateTowel();
 
 
   <footer>
-    © 2025 Premium Hotel  Accessories | Call or WhatsApp to Order
+    © 2025 Premium Accessories for Modern Living | Call or WhatsApp to Order
   </footer>
 
 </body>
