@@ -168,11 +168,31 @@
   margin-left: 6px;
 }
 
+.social-icons {
+  display: flex;
+  gap: 18px;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+.social-icons a {
+  color: #ffffff;              /* bright white */
+  font-size: 22px;
+  opacity: 0.85;               /* visible but elegant */
+  transition: all 0.3s ease;
+}
+
+.social-icons a:hover {
+  opacity: 1;
+  color: #d4af37;              /* luxury gold on hover */
+  transform: translateY(-2px) scale(1.15);
+}
 
 
   </style>
 </head>
 <body>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <!-- HERO -->
   <div class="hero">
@@ -491,6 +511,21 @@ updateTowel();
 
   <footer>
     © 2025 Premium Accessories for Modern Living | Call or WhatsApp to Order
+    <div class="social-icons">
+  <a href="https://www.facebook.com/NivaraLiving/" target="_blank">
+    <i class="fab fa-facebook-f"></i>
+  </a>
+  <a href="https://www.instagram.com/yourprofile" target="_blank">
+    <i class="fab fa-instagram"></i>
+  </a>
+  <a href="https://www.linkedin.com/in/yourprofile" target="_blank">
+    <i class="fab fa-linkedin-in"></i>
+  </a>
+  <a href="https://twitter.com/yourprofile" target="_blank">
+    <i class="fab fa-twitter"></i>
+  </a>
+</div>
+
   </footer>
 
 </body>
