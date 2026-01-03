@@ -608,6 +608,29 @@ updateTowel();
 }
 
 
+#cartPopup .upiBtn{
+  width:100%;
+  padding:12px;
+  background:#111;
+  color:#fff;
+  border:none;
+  margin-top:12px;
+  cursor:pointer;
+  font-size:14px;
+}
+
+
+.upiqrclose{
+  width:100%;
+  padding:12px;
+  background:#111;
+  color:#fff;
+  border:none;
+  margin-top:12px;
+  cursor:pointer;
+  font-size:14px;
+}
+
 .cart-action{
   margin-top:15px;
 }
@@ -846,6 +869,29 @@ updateTowel();
   pointer-events:none;
 }
 
+
+.upiBtn{
+  width:100%;
+  padding:12px;
+  margin-top:8px;
+  background:#25a55f;
+  color:#fff;
+  border:none;
+  border-radius:6px;
+  font-size:14px;
+  font-weight:600;
+  cursor:pointer;
+}
+.upiBtn.outline{
+  background:#fff;
+  color:#25a55f;
+  border:2px dashed #25a55f;
+}
+.upiBtn:hover{
+  opacity:0.9;
+}
+
+
 </style>
 
 <div id="shippingBarWrap">
@@ -869,24 +915,49 @@ updateTowel();
   </p>
 
 <label id="nameLabel" class="formLabel disabled">
-  Customer Name
+  <b>Customer Name</b>
 </label>
 <input type="text" id="customerName"
   placeholder="Enter your name"
   oninput="validateCheckout()">
 
 <label id="phoneLabel" class="formLabel disabled">
-  Phone Number
+  <b>Phone Number</b>
 </label>
 <input type="tel" id="customerPhone"
   placeholder="Enter phone number"
   oninput="validateCheckout()">
 
+<p style="font-size:12px; color:#666; margin:8px 0;">
+ <b> After placing order on WhatsApp, please complete payment using UPI.</b>
+</p>
 
   
 <button class="checkoutBtn" id="checkoutBtn" onclick="checkout()">
   Order via WhatsApp
 </button>
+
+<div id="upiSection" style="display:none;">
+
+
+<p style="font-size:13px;color:#666;margin:10px 0 6px;">
+  Pay using UPI
+</p>
+
+<button class="upiBtn" onclick="payByUPIApp()">
+  Pay by UPI App
+</button>
+
+<button class="upiBtn outline" onclick="showUPIQR()">
+  Scan via QR
+</button>
+</div>
+
+<button class="upiBtn outline" onclick="paymentCompleted()">
+  I have completed payment
+</button>
+
+
 
 </div>
 
@@ -1013,10 +1084,14 @@ message += "Order Details:%0A";
     "https://wa.me/918080124034?text=" + message,
     "_blank"
   );
+  document.getElementById("orderSuccessMsg").scrollIntoView({
+  behavior: "smooth",
+  block: "start"
+});
 
-   localStorage.removeItem("cart");
-   cart = [];
-   updateCart();
+document.getElementById("upiSection").style.display = "block";
+
+  
 }
 
 
@@ -1276,7 +1351,108 @@ if(name && phoneValid){
 
 }
 
+
+
+
+
+function payByUPIApp(){
+  let total = document.getElementById("total").innerText;
+
+  alert(
+    "Please complete the UPI payment.\n\n" +
+    "After payment, send the payment screenshot or UTR number on WhatsApp to confirm your order."
+  );
+
+  location.href =
+    "upi://pay" +
+    "?pa=surya@okaxis" +
+    "&pn=Nivara%20Living" +
+    "&am=" + total +
+    "&cu=INR" +
+    "&tn=Order%20Payment";
+
+     localStorage.removeItem("cart");
+   cart = [];
+   updateCart();
+
+  window.open(upiUrl, "_blank");
+}
+
+
+function showUPIQR(){
+  document.getElementById("upiAmount").innerText =
+    document.getElementById("total").innerText;
+
+  document.getElementById("upiQRPopup").style.display = "flex";
+}
+
+function closeUPIQR(){
+  document.getElementById("upiQRPopup").style.display = "none";
+}
+
+function paymentCompleted(){
+  alert("Thank you! We will verify your payment and confirm your order shortly.");
+
+  // ✅ CLEAR CART HERE
+  localStorage.removeItem("cart");
+  cart = [];
+  updateCart();
+
+  // Optional UI cleanup
+  document.getElementById("upiSection").style.display = "none";
+}
+
+
 </script>
+
+
+<div id="orderSuccessMsg" style="
+  display:none;
+  background:#e8f7ee;
+  color:#1b5e20;
+  padding:10px;
+  border-radius:6px;
+  font-size:13px;
+  margin:10px 0;
+  text-align:center;
+">
+  ✔ Order sent successfully.<br>
+  Please complete payment using UPI below.
+</div>
+
+
+
+<!-- UPI QR POPUP -->
+<div id="upiQRPopup" style="
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.6);
+  justify-content:center;
+  align-items:center;
+  z-index:2000;
+">
+  <div style="
+    background:#fff;
+    padding:20px;
+    border-radius:10px;
+    text-align:center;
+    width:280px;
+  ">
+    <h3>Scan to Pay</h3>
+
+    <!-- YOUR QR IMAGE -->
+    <img src="Images/upi-qr.jpeg" style="width:200px; margin:10px 0;">
+
+    <p>Amount: ₹<span id="upiAmount"></span></p>
+
+    <p style="font-size:12px;color:#666">
+      <b>Scan using Google Pay / PhonePe / Paytm </b>
+    </p>
+
+    <button class="upiqrclose" onclick="closeUPIQR()">Close</button>
+  </div>
+</div>
 
 
 
