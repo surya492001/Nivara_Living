@@ -594,27 +594,19 @@ updateTowel();
 #cartPopup h3{
   margin-top:0;
 }
-.cartItem{
-  display:flex;
-  justify-content:space-between;
-  margin-bottom:10px;
-}
-.cartItem button{
-  background:red;
-  color:#fff;
-  border:none;
-  padding:2px 6px;
-  cursor:pointer;
-}
-#cartPopup button{
+
+
+#cartPopup .checkoutBtn{
   width:100%;
-  padding:10px;
+  padding:12px;
   background:#111;
   color:#fff;
   border:none;
-  margin-top:10px;
+  margin-top:12px;
   cursor:pointer;
+  font-size:14px;
 }
+
 
 .cart-action{
   margin-top:15px;
@@ -666,7 +658,183 @@ updateTowel();
   display:none;
   z-index:998;
 }
+
+
+.cartLeft{
+  flex:1;
+}
+
+
+
+
+.cartQtyRow{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+
+.cartTotals{
+  border-top:1px solid #ddd;
+  padding-top:10px;
+  margin-top:10px;
+  font-size:14px;
+}
+
+.cartTotals p{
+  display:flex;
+  justify-content:space-between;
+  margin:6px 0;
+}
+
+.cartTotals .total{
+  font-size:16px;
+  font-weight:700;
+}
+.cartInfo{
+  flex:1;
+}
+
+
+
+
+
+.cartRow{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+
+
+
+
+
+#shippingBarWrap{margin:10px 0}
+#shippingBar{height:8px;background:#eee;border-radius:6px;overflow:hidden}
+#shippingProgress{height:100%;width:0%;background:#25a55f;transition:0.3s}
+
+#shippingText{
+  font-size:14px;
+  font-weight:600;
+  color:#222;
+  margin-bottom:8px;
+}
+
+#shippingText span{
+  color:#2e7d32;   /* green highlight */
+  font-weight:700;
+}
+
+
+
+.cartItem{
+  padding:12px 0;
+  border-bottom:1px solid #e6e6e6;
+}
+
+.cartHeader{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+}
+
+.cartTitle{
+  font-size:14px;
+  font-weight:600;
+  line-height:1.3;
+}
+
+.cartColor{
+  color:#444;               /* darker */
+  font-weight:500;          /* slightly bolder */
+  text-transform:capitalize;/* Brown instead of brown */
+}
+
+
+.cartBottomRow{
+  margin-top:10px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+
+/* ===== CART QTY CONTROLS (FINAL) ===== */
+
+.qtyControls{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:4px 12px;
+  border:2px solid #f1c40f;
+  border-radius:999px;
+  background:#fff;
+}
+
+/* isolate buttons fully */
+.qtyControls button{
+  all:unset;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:20px;
+  height:20px;
+  border-radius:50%;
+  font-size:14px;
+  font-weight:700;
+  cursor:pointer;
+  color:#111;
+  background:#f2f2f2;
+}
+
+.qtyControls span{
+  font-size:14px;
+  font-weight:600;
+  min-width:14px;
+  text-align:center;
+}
+
+.qtyControls button:hover:not(:disabled){
+  background:#e6e6e6;
+}
+
+.qtyControls button:disabled{
+  opacity:0.35;
+  cursor:not-allowed;
+}
+
+
+
+
+.cartPrice{
+  font-size:15px;
+  font-weight:600;
+  color:#111;
+  white-space:nowrap;
+}
+
+
+.removeBtn{
+  all:unset;
+  font-size:18px;
+  color:#999;
+  cursor:pointer;
+}
+
+.removeBtn:hover{
+  color:#000;
+}
+
+
 </style>
+
+<div id="shippingBarWrap">
+  <div id="shippingText">Add ₹1000 to unlock FREE SHIPPING</div>
+  <div id="shippingBar">
+    <div id="shippingProgress"></div>
+  </div>
+</div>
 
 
 <div id="cartPopup">
@@ -681,7 +849,11 @@ updateTowel();
     Total: ₹<span id="total">0</span>
   </p>
 
-  <button onclick="checkout()">Order via WhatsApp</button>
+  <input type="text" id="customerName"
+  placeholder="Enter your name"
+  style="width:100%; padding:8px; margin:10px 0; border:1px solid #ccc; border-radius:4px;">
+  
+  <button class="checkoutBtn" onclick="checkout()">Order via WhatsApp</button>
 
   
 </div>
@@ -698,8 +870,6 @@ function addToCart(name, price){
   updateCart();
 }
 
-
-
 function updateCart(){
   let itemsDiv = document.getElementById("cartItems");
   let subtotal = 0;
@@ -712,15 +882,30 @@ function updateCart(){
     subtotal += itemTotal;
     totalQty += item.qty;
 
-    itemsDiv.innerHTML += `
-      <div class="cartItem">
-        <div>
-          <b>${item.name} (${item.color})</b><br>
-          Qty: ${item.qty} × ₹${item.price} = ₹${itemTotal}
-        </div>
-        <button onclick="removeItem(${index})">x</button>
-      </div>`;
-  });
+   
+itemsDiv.innerHTML += `
+  <div class="cartItem">
+    <div class="cartHeader">
+      <div class="cartTitle">
+        ${item.name} <span class="cartColor">(${item.color})</span>
+      </div>
+      <button class="removeBtn" onclick="removeItem(${index})">×</button>
+    </div>
+
+    <div class="cartBottomRow">
+      <div class="qtyControls">
+        <button onclick="changeCartQty(${index}, -1)" ${item.qty===1?'disabled':''}>−</button>
+        <span>${item.qty}</span>
+        <button onclick="changeCartQty(${index}, 1)" ${item.qty===3?'disabled':''}>+</button>
+      </div>
+
+      <div class="cartPrice">
+        ₹${item.price} × ${item.qty} = <b>₹${item.price * item.qty}</b>
+      </div>
+    </div>
+  </div>
+`;});
+
 
   let shipping = subtotal >= 1000 ? 0 : (cart.length ? 80 : 0);
 
@@ -728,6 +913,8 @@ function updateCart(){
   document.getElementById("shipping").innerText = shipping;
   document.getElementById("total").innerText = subtotal + shipping;
   document.getElementById("cartCount").innerText = totalQty;
+
+  updateShippingBar(subtotal);
 }
 
 
@@ -738,6 +925,18 @@ function removeItem(index){
   updateCart();
 }
 
+function changeCartQty(index, delta){
+  let item = cart[index];
+  let newQty = item.qty + delta;
+
+  if(newQty < 1 || newQty > 3) return;
+
+  item.qty = newQty;
+  localStorage.setItem("cart", JSON.stringify(cart));
+  updateCart();
+}
+
+
 
 
 function checkout(){
@@ -746,12 +945,20 @@ function checkout(){
     return;
   }
 
-  let message = "Order Details:%0A";
+let customerName = document.getElementById("customerName").value || "Customer";
+
+message = `NIVARA LIVING%0A`;
+message += `Customer Name: ${customerName}%0A%0A`;
+message += "Order Details:%0A";
+
   let subtotal = 0;
 
-  cart.forEach(i => {
-    message += `• ${i.name} - ₹${i.price}%0A`;
-    subtotal += i.price;
+  cart.forEach(item => {
+    let itemTotal = item.price * item.qty;
+    subtotal += itemTotal;
+
+    message += `• ${item.name} (${capitalize(item.color)})%0A`;
+    message += `  Qty: ${item.qty} × ₹${item.price} = ₹${itemTotal}%0A`;
   });
 
   let shipping = subtotal >= 1000 ? 0 : 80;
@@ -761,9 +968,21 @@ function checkout(){
   message += `%0AShipping: ₹${shipping}`;
   message += `%0ATotal: ₹${total}`;
 
-  window.open("https://wa.me/918080124034?text=" + message);
+  // WhatsApp redirect
+  window.open(
+    "https://wa.me/918080124034?text=" + message,
+    "_blank"
+  );
+
+   localStorage.removeItem("cart");
+   cart = [];
+   updateCart();
 }
 
+
+function capitalize(text){
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
 
 
 function changeQty(el, change){
@@ -977,6 +1196,23 @@ document.addEventListener("keydown", function(e){
     closeCart();
   }
 });
+
+
+
+function updateShippingBar(subtotal){
+  let goal = 1000;
+  let progress = Math.min((subtotal / goal) * 100, 100);
+
+  document.getElementById("shippingProgress").style.width = progress + "%";
+
+document.getElementById("shippingText").innerHTML =
+  subtotal >= goal
+    ? "🎉 <span>FREE SHIPPING unlocked!</span>"
+    : `Add <span>₹${goal - subtotal}</span> to unlock <span>FREE SHIPPING</span>`;
+
+}
+
+
 </script>
 
 
