@@ -260,7 +260,7 @@
   <div class="qty-box">
     <button onclick="changeQty(this, -1)">−</button>
     <span class="qty">1</span>
-  <button onclick="changeQty(this, 1)" title="Maximum 3 allowed">+</button>
+  <button onclick="changeQty(this, 1)">+</button>
   </div>
 
   <button class="add-cart-btn"
@@ -1133,7 +1133,7 @@ updateTowel();
 <div id="floatingIcons">
 <!-- Google Business Floating Icon -->
 <div class="gmb-float" onclick="openGMBQR()">
-  <img src="/Images/googlebusinessprofileicon.png"
+  <img src="./Images/googlebusinessprofileicon.png"
        alt="Google Business Profile"
        title="View Google Business Profile">
 </div>
@@ -1317,6 +1317,22 @@ function capitalize(text){
   return text.charAt(0).toUpperCase() + text.slice(1);
 }
 
+function initQtyBox(qtyBox){
+  let qtySpan = qtyBox.querySelector(".qty");
+  let plusBtn = qtyBox.querySelector("button:last-child");
+  let minusBtn = qtyBox.querySelector("button:first-child");
+
+  let card = qtyBox.closest(".card");
+  let name = card.querySelector("h4").innerText;
+  let colorSelect = card.querySelector("select");
+  let color = colorSelect ? colorSelect.value.toLowerCase() : "";
+
+  let qty = parseInt(qtySpan.innerText);
+
+  minusBtn.disabled = qty === 1;
+  plusBtn.disabled = isStockMaxed(name, color);
+}
+
 
 function changeQty(el, change){
   let qtyBox = el.parentElement;
@@ -1348,6 +1364,8 @@ function changeQty(el, change){
   }
 
   qtySpan.innerText = qty;
+  initQtyBox(qtyBox);
+
 
   // 🔘 Disable buttons correctly
   minusBtn.disabled = qty === 1;
@@ -1611,6 +1629,13 @@ function openReviewQR() {
 function closeReviewQR() {
   document.getElementById("reviewModal").style.display = "none";
 }
+
+window.addEventListener("load", () => {
+  document.querySelectorAll(".qty-box").forEach(box => {
+    initQtyBox(box);
+  });
+});
+
 </script>
 
 
