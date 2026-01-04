@@ -1324,19 +1324,35 @@ function changeQty(el, change){
   let plusBtn = qtyBox.querySelector("button:last-child");
   let minusBtn = qtyBox.querySelector("button:first-child");
 
-  let qty = parseInt(qtySpan.innerText);
-  qty += change;
+  // 🔹 Find product card context
+  let card = el.closest(".card");
+  let name = card.querySelector("h4").innerText;
 
-  if(qty < 1) qty = 1;
-  if(qty > 3) qty = 3;
+  let colorSelect = card.querySelector("select");
+  let color = colorSelect ? colorSelect.value.toLowerCase() : "";
+
+  let qty = parseInt(qtySpan.innerText);
+
+  // ➖ Decrease
+  if(change === -1){
+    qty = Math.max(1, qty - 1);
+  }
+
+  // ➕ Increase (use stock validation)
+  if(change === 1){
+    if(!canAddByStock(name, color, 1)){
+      alert(`Only ${stockMap[name][color]} available for ${color}`);
+      return;
+    }
+    qty += 1;
+  }
 
   qtySpan.innerText = qty;
 
-  // Disable buttons
-  plusBtn.disabled = qty === 3;
+  // 🔘 Disable buttons correctly
   minusBtn.disabled = qty === 1;
+  plusBtn.disabled = isStockMaxed(name, color);
 }
-
 
 
 function addToCartWithQtyBlanket(btn){
