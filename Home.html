@@ -401,6 +401,56 @@
 
   </div>
 <script>
+  //to update stock
+ 
+
+const stockMap = {
+  "Bedsheet – Glace Cotton 300 TC": {
+    taupe: 3,
+    grey: 1,
+    brown: 2,
+    white: 2
+
+  },
+  "Pillow Cover – 300 TC": {
+    brown: 2,
+    white: 3
+  },
+  "Premium Bath Towel – 500 GSM": {
+    brown: 5,
+    taupe: 2,
+    white: 2
+  },
+   "Fleece Blanket – Camel | Quality - Double": {
+    camel: 5
+  }
+
+};
+
+
+function canAddByStock(name, color, qtyToAdd){
+  let productStock = stockMap[name]?.[color];
+
+  // If stock not defined, allow (fallback)
+  if(productStock === undefined) return true;
+
+  let existingItem = cart.find(
+    item => item.name === name && item.color === color
+  );
+
+  let currentQty = existingItem ? existingItem.qty : 0;
+
+  return (currentQty + qtyToAdd) <= productStock;
+}
+
+function isStockMaxed(name, color){
+  let stock = stockMap[name]?.[color];
+  if(stock === undefined) return false;
+
+  let item = cart.find(i => i.name === name && i.color === color);
+  return item && item.qty >= stock;
+}
+
 function updateBedSheet(select) {
   if (!select) return;
 
@@ -1153,9 +1203,17 @@ itemsDiv.innerHTML += `
 
     <div class="cartBottomRow">
       <div class="qtyControls">
-        <button onclick="changeCartQty(${index}, -1)" ${item.qty===1?'disabled':''}>−</button>
+        <button
+          onclick="changeCartQty(${index}, -1)"
+          ${item.qty === 1 ? 'disabled' : ''}
+        >−</button>
+
         <span>${item.qty}</span>
-        <button onclick="changeCartQty(${index}, 1)" ${item.qty===3?'disabled':''}>+</button>
+
+        <button
+          onclick="changeCartQty(${index}, 1)"
+          ${isStockMaxed(item.name, item.color) ? 'disabled' : ''}
+        >+</button>
       </div>
 
       <div class="cartPrice">
@@ -1164,7 +1222,6 @@ itemsDiv.innerHTML += `
     </div>
   </div>
 `;});
-
 
   let shipping = subtotal >= 1000 ? 0 : (cart.length ? 80 : 0);
 
@@ -1290,28 +1347,18 @@ function addToCartWithQtyBlanket(btn){
     btn.closest(".card")?.querySelector(".qty")?.innerText || 1
   );
 
-  // 🔍 Check if same product + color already exists
-  let existingItem = cart.find(
-    i => i.name === name && i.color === color
-  );
+  
+  if(!canAddByStock(name, color, qty)){
+    alert(`Only ${stockMap[name][color]} available for ${color}`);
+    return;
+  }
+
+  let existingItem = cart.find(i => i.name === name && i.color === color);
 
   if(existingItem){
-    if(existingItem.qty + qty > 3){
-      alert("Maximum 3 allowed per color");
-      return;
-    }
-    existingItem.qty += qty;   // ✅ increase quantity
+    existingItem.qty += qty;
   } else {
-    if(qty > 3){
-      alert("Maximum 3 allowed per color");
-      return;
-    }
-    cart.push({
-      name: name,
-      color: color,
-      price: price,
-      qty: qty
-    });
+    cart.push({ name, color, price, qty });
   }
 
   localStorage.setItem("cart", JSON.stringify(cart));
@@ -1330,28 +1377,18 @@ function addPillowToCart(btn){
     btn.closest(".card")?.querySelector(".qty")?.innerText || 1
   );
 
-  // 🔍 Check if same product + color already exists
-  let existingItem = cart.find(
-    i => i.name === name && i.color === color
-  );
+  
+  if(!canAddByStock(name, color, qty)){
+    alert(`Only ${stockMap[name][color]} available for ${color}`);
+    return;
+  }
+
+  let existingItem = cart.find(i => i.name === name && i.color === color);
 
   if(existingItem){
-    if(existingItem.qty + qty > 3){
-      alert("Maximum 3 allowed per color");
-      return;
-    }
-    existingItem.qty += qty;   // ✅ increase quantity
+    existingItem.qty += qty;
   } else {
-    if(qty > 3){
-      alert("Maximum 3 allowed per color");
-      return;
-    }
-    cart.push({
-      name: name,
-      color: color,
-      price: price,
-      qty: qty
-    });
+    cart.push({ name, color, price, qty });
   }
 
   localStorage.setItem("cart", JSON.stringify(cart));
@@ -1370,28 +1407,18 @@ function addtowelToCart(btn){
     btn.closest(".card")?.querySelector(".qty")?.innerText || 1
   );
 
-  // 🔍 Check if same product + color already exists
-  let existingItem = cart.find(
-    i => i.name === name && i.color === color
-  );
+  
+  if(!canAddByStock(name, color, qty)){
+    alert(`Only ${stockMap[name][color]} available for ${color}`);
+    return;
+  }
+
+  let existingItem = cart.find(i => i.name === name && i.color === color);
 
   if(existingItem){
-    if(existingItem.qty + qty > 3){
-      alert("Maximum 3 allowed per color");
-      return;
-    }
-    existingItem.qty += qty;   // ✅ increase quantity
+    existingItem.qty += qty;
   } else {
-    if(qty > 3){
-      alert("Maximum 3 allowed per color");
-      return;
-    }
-    cart.push({
-      name: name,
-      color: color,
-      price: price,
-      qty: qty
-    });
+    cart.push({ name, color, price, qty });
   }
 
   localStorage.setItem("cart", JSON.stringify(cart));
@@ -1413,30 +1440,18 @@ function addBedToCart(btn){
     btn.closest(".card")?.querySelector(".qty")?.innerText || 1
   );
 
-  // 🔍 Check if same product + color already exists
-  let existingItem = cart.find(
-    i => i.name === name && i.color === color
-  );
-
-  if(existingItem){
-    if(existingItem.qty + qty > 3){
-      alert("Maximum 3 allowed per color");
-      return;
-    }
-    existingItem.qty += qty;   // ✅ increase quantity
-  } else {
-    if(qty > 3){
-      alert("Maximum 3 allowed per color");
-      return;
-    }
-    cart.push({
-      name: name,
-      color: color,
-      price: price,
-      qty: qty
-    });
+  if(!canAddByStock(name, color, qty)){
+    alert(`Only ${stockMap[name][color]} available for ${color}`);
+    return;
   }
 
+  let existingItem = cart.find(i => i.name === name && i.color === color);
+
+  if(existingItem){
+    existingItem.qty += qty;
+  } else {
+    cart.push({ name, color, price, qty });
+  }
   localStorage.setItem("cart", JSON.stringify(cart));
   updateCart();
 }
