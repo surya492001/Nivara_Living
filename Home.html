@@ -245,7 +245,8 @@
   <label><b>Color:</b></label>
   <select id="bedsheet-color" onchange="updateBedSheet(this)">
       <option value="taupe" data-mrp="790">Taupe</option>
-         <option value="grey" data-mrp="790">Grey</option>
+      <option value="grey" data-mrp="790">Grey</option>
+      <option value="brown" data-mrp="790">Brown</option>
       <option value="white" data-mrp="730">White</option>
   </select>
 </div>
@@ -285,8 +286,9 @@
   <label><b>Color:</b></label>
   <select id="pillow-color" onchange="updatePillow(this)">
         <option value="brown" data-mrp="80">Brown</option>
-    <option value="grey" data-mrp="80">Steel Grey</option>
-        <option value="white" data-mrp="80">white</option>
+       <option value="grey" data-mrp="80">Steel Grey</option>
+       <option value="taupe" data-mrp="80">Taupe</option>
+        <option value="white" data-mrp="80">White</option>
 
   </select>
 </div>
@@ -327,7 +329,7 @@
   <label><b>Color:</b></label>
   <select id="towel-color" onchange="updateTowel(this)">
         <option value="Brown" data-mrp="398">Brown</option>
-    <option value="white" data-mrp="310">white</option>
+    <option value="white" data-mrp="310">White</option>
     <option value="taupe" data-mrp="398">Taupe</option>
 
   </select>
@@ -412,6 +414,7 @@ function updateBedSheet(select) {
   const imgMap = {
         taupe: "./Images/bed_sheet_taupe.jpeg",
     grey: "./Images/bed_sheet_grey.jpeg",
+    brown: "./Images/BrownBedsheet.jpeg",
     white: "./Images/bed_sheet_white.jpeg"
   };
 
@@ -462,6 +465,7 @@ function updatePillow(selval) {
   const imgMap2 = {
         brown: "./Images/brownpillow.jpeg",
     grey: "./Images/greypillow.jpeg",
+    taupe:"./Images/taupepillow.jpeg",
     white: "./Images/White_pillow.jpeg"
   };
 
@@ -851,19 +855,25 @@ updateTowel();
 
 .formLabel{
   display:block;
-  font-size:13px;
-  margin:6px 0 4px;
-  transition:0.3s;
+  font-size:15px;        /* ⬅ bigger */
+  font-weight:700;       /* ⬅ bold */
+  color:#111;            /* ⬅ dark */
+  margin:10px 0 6px;
 }
 
 .formLabel.disabled{
-  color:#aaa;
+  opacity:0.6;
 }
 
 .formLabel.active{
-  color:#111;
-  font-weight:600;
+  opacity:1;
 }
+
+.required{
+  color:#d32f2f;
+  margin-left:2px;
+}
+
 .checkoutBtn.disabled{
   opacity:0.5;
   pointer-events:none;
@@ -892,6 +902,95 @@ updateTowel();
 }
 
 
+/* Google Business Floating Icon */
+.gmb-float {
+  position: fixed;
+  right: 15px;
+  bottom: 120px;
+  width: 52px;
+  height: 52px;
+  background: #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  cursor: pointer;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gmb-float img {
+  width: 28px;
+}
+
+/* Popup Background */
+.gmb-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 1000;
+}
+
+/* Popup Box */
+.gmb-modal-content {
+  background: #ffffff;
+  width: 90%;
+  max-width: 320px;
+  margin: 12% auto;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  position: relative;
+}
+
+.gmb-modal-content img {
+  width: 220px;
+  margin: 15px 0;
+}
+
+/* Close Button */
+.gmb-close {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  font-size: 24px;
+  cursor: pointer;
+  color: #333;
+}
+
+/* Second icon position */
+.gmb-float.reviews {
+  bottom: 185px; /* stacked above business icon */
+}
+#cartPopup input,
+#cartPopup textarea{
+  width:100%;
+  padding:10px;
+  font-size:14px;
+  border:1px solid #ccc;
+  border-radius:6px;
+  margin-bottom:8px;
+}
+
+/* Instruction text */
+.orderNote{
+  background:#fff8e1;
+  color:#5d4037;
+  font-size:13px;
+  font-weight:600;
+  padding:10px;
+  border-left:4px solid #f1c40f;
+  border-radius:4px;
+  margin:12px 0;
+}
+
+/* Hide floating icons when cart is open */
+#cartPopup.open ~ #floatingIcons{
+  display:none;
+}
+
+
 </style>
 
 <div id="shippingBarWrap">
@@ -914,23 +1013,36 @@ updateTowel();
     Total: ₹<span id="total">0</span>
   </p>
 
+  <!-- Customer Name -->
 <label id="nameLabel" class="formLabel disabled">
-  <b>Customer Name</b>
+  Customer Name <span class="required">*</span>
 </label>
 <input type="text" id="customerName"
-  placeholder="Enter your name"
+  placeholder="Enter your full name"
   oninput="validateCheckout()">
 
+<!-- Phone Number -->
 <label id="phoneLabel" class="formLabel disabled">
-  <b>Phone Number</b>
+  Phone Number <span class="required">*</span>
 </label>
 <input type="tel" id="customerPhone"
-  placeholder="Enter phone number"
+  placeholder="Enter 10-digit phone number"
   oninput="validateCheckout()">
 
-<p style="font-size:12px; color:#666; margin:8px 0;">
- <b> After placing order on WhatsApp, please complete payment using UPI.</b>
+<!-- Address -->
+<label id="addressLabel" class="formLabel disabled">
+  Delivery Address <span class="required">*</span>
+</label>
+<textarea id="customerAddress"
+  placeholder="House name, Street, City, Pincode"
+  rows="3"
+  oninput="validateCheckout()"></textarea>
+
+<!-- Instruction -->
+<p class="orderNote">
+  After placing the order on WhatsApp, please complete the payment using UPI.
 </p>
+
 
   
 <button class="checkoutBtn" id="checkoutBtn" onclick="checkout()">
@@ -966,6 +1078,47 @@ updateTowel();
 
 <div id="cartOverlay" onclick="closeCart()"></div>
 
+<div id="floatingIcons">
+<!-- Google Business Floating Icon -->
+<div class="gmb-float" onclick="openGMBQR()">
+  <img src="/Images/googlebusinessprofileicon.png"
+       alt="Google Business Profile"
+       title="View Google Business Profile">
+</div>
+
+<!-- Google Business QR Popup -->
+<div id="gmbModal" class="gmb-modal">
+  <div class="gmb-modal-content">
+    <span class="gmb-close" onclick="closeGMBQR()">&times;</span>
+    <h3>Scan to View Our Google Business Profile</h3>
+
+    <!-- CHANGE IMAGE PATH IF NEEDED -->
+    <img src="./Images/google-business-qr.png" alt="Google Business QR">
+
+    <p>Nivara Living</p>
+  </div>
+</div>
+
+<!-- Google Reviews Floating Icon -->
+<div class="gmb-float reviews" onclick="openReviewQR()">
+  <img src="./Images/reviewicon.png"
+       alt="Google Reviews"
+       title="View Google Reviews">
+</div>
+
+<!-- Google Reviews QR Popup -->
+<div id="reviewModal" class="gmb-modal">
+  <div class="gmb-modal-content">
+    <span class="gmb-close" onclick="closeReviewQR()">&times;</span>
+    <h3>Scan to Give Us a Google Review</h3>
+
+    <!-- ADD YOUR REVIEWS QR HERE -->
+    <img src="./Images/reviewQR.png" alt="Google Reviews QR">
+
+    <p>Nivara Living</p>
+  </div>
+</div>
+</div>
 
 <script>
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -1053,16 +1206,18 @@ function checkout(){
 
 let customerName = document.getElementById("customerName").value.trim();
 let customerPhone = document.getElementById("customerPhone").value.trim();
+let customerAddress=document.getElementById("customerAddress").value.trim();
 
-if(!customerName || !customerPhone){
-  alert("Please enter your name and phone number");
+if(!customerName || !customerPhone||!customerAddress){
+  alert("Please enter your Name and Phone number and Address");
   return;
 }
 
 
 message = `NIVARA LIVING%0A`;
 message += `Customer Name: ${customerName}%0A%0A`;
-message += `Customer PhoeNo: ${customerPhone}%0A%0A`;
+message += `Customer PhoneNo: ${customerPhone}%0A%0A`;
+message += `Customer Address: ${customerAddress}%0A%0A`;
 message += "Order Details:%0A";
 
   let subtotal = 0;
@@ -1335,6 +1490,7 @@ document.getElementById("shippingText").innerHTML =
 function validateCheckout(){
   let name = document.getElementById("customerName").value.trim();
   let phone = document.getElementById("customerPhone").value.trim();
+  let address = document.getElementById("customerAddress").value.trim();
 
   let nameLabel = document.getElementById("nameLabel");
   let phoneLabel = document.getElementById("phoneLabel");
@@ -1406,7 +1562,22 @@ function paymentCompleted(){
   document.getElementById("upiSection").style.display = "none";
 }
 
+//for google business profile qr
+function openGMBQR() {
+  document.getElementById("gmbModal").style.display = "block";
+}
 
+function closeGMBQR() {
+  document.getElementById("gmbModal").style.display = "none";
+}
+
+function openReviewQR() {
+  document.getElementById("reviewModal").style.display = "block";
+}
+
+function closeReviewQR() {
+  document.getElementById("reviewModal").style.display = "none";
+}
 </script>
 
 
