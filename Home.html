@@ -1131,7 +1131,9 @@ updateTowel();
 
 <div id="ConfirmPay" style="display:none;">
 
-<button class="upiBtn outline" onclick="paymentCompleted()">
+<button class="upiBtn outline" 
+        style="display:none;"
+onclick="paymentCompleted()">
   I have completed payment
 </button>
 </div>
@@ -1589,6 +1591,8 @@ if(name && phoneValid){
 
 
 function payByUPIApp(){
+    document.getElementById("paymentDoneBtn").style.display = "block";
+
   let total = document.getElementById("total").innerText;
 
   alert(
@@ -1617,6 +1621,8 @@ function showUPIQR(){
     document.getElementById("total").innerText;
 
   document.getElementById("upiQRPopup").style.display = "flex";
+      document.getElementById("paymentDoneBtn").style.display = "block";
+
 }
 
 function closeUPIQR(){
@@ -1624,6 +1630,7 @@ function closeUPIQR(){
 }
 
 function paymentCompleted(){
+
   alert("Thank you! We will verify your payment and confirm your order shortly.");
 
   // ✅ CLEAR CART HERE
